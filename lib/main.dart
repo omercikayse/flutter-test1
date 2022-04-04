@@ -60,10 +60,14 @@ class _MyAppHomeState extends State<MyAppHome> {
       step++;
     });
 
-    Timer.periodic((Duration(seconds: 1)), (timer) {
+    var timer = Timer.periodic((Duration(seconds: 1)), (timer) {
       int now = DateTime.now().millisecondsSinceEpoch;
       setState(() {
-        if (now - lastTypedAt > 5000) step++;
+        if (step == 1 && now - lastTypedAt > 5000) {
+          timer.cancel();
+          step++;
+        }
+        if (step != 1) timer.cancel();
       });
     });
   }
@@ -111,7 +115,10 @@ class _MyAppHomeState extends State<MyAppHome> {
         )
       ];
     } else {
-      shownWidget = <Widget>[Text('Finish, your score : $score')];
+      shownWidget = <Widget>[
+        Text('Finish, your score : $score'),
+        ElevatedButton(onPressed: resetGame, child: Text("Try Again!"))
+      ];
     }
 
     return Scaffold(
@@ -124,5 +131,12 @@ class _MyAppHomeState extends State<MyAppHome> {
         children: shownWidget,
       )),
     );
+  }
+
+  void resetGame() {
+    setState(() {
+      score = 0;
+      step = 0;
+    });
   }
 }
