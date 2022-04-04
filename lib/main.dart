@@ -1,0 +1,111 @@
+// ignore_for_file: prefer_const_constructors
+
+import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
+import 'dart:async';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyAppHome(),
+    );
+  }
+}
+
+// ignore: use_key_in_widget_constructors
+class MyAppHome extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return _MyAppHomeState();
+  }
+}
+
+class _MyAppHomeState extends State<MyAppHome> {
+  int step = 0;
+  int score = 0;
+  int count = 0;
+
+  void onStartClick() {
+    setState(() {
+      step++;
+    });
+
+    Timer.periodic((Duration(seconds: 1)), (timer) {
+      //GAME OVER
+      if (count > 5) step++;
+
+      setState(() {
+        count++;
+        if (step == 1) score++;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dumyText =
+        'The lorem ipsum is a placeholder text used in publishing and graphic design. This filler text is a short paragraph that contains all the letters of the alphabet. The characters are spread out evenly so that the reader'
+            .toLowerCase()
+            .replaceAll(',', '')
+            .replaceAll('.', '');
+
+    List<Widget> shownWidget = [];
+
+    if (step == 0) {
+      shownWidget = <Widget>[
+        Text('Welcome !'),
+        ElevatedButton(
+          child: Text('Start'),
+          onPressed: onStartClick,
+        )
+      ];
+    } else if (step == 1) {
+      shownWidget = <Widget>[
+        Text('$score'),
+        Container(
+          height: 40,
+          child: Marquee(
+            text: dumyText,
+            style: TextStyle(fontSize: 24, letterSpacing: 2),
+            scrollAxis: Axis.horizontal,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            blankSpace: 20.0,
+            velocity: 75,
+            pauseAfterRound: Duration(seconds: 10),
+            startPadding: 0,
+            accelerationDuration: Duration(seconds: 15),
+            accelerationCurve: Curves.ease,
+            decelerationDuration: Duration(microseconds: 500),
+            decelerationCurve: Curves.easeOut,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(left: 32, right: 16, top: 16),
+          child: TextField(
+            autofocus: true,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: 'Type please'),
+          ),
+        )
+      ];
+    } else {
+      shownWidget = <Widget>[Text('Finish, your score : $score')];
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Hello Ayse"),
+      ),
+      body: Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: shownWidget,
+      )),
+    );
+  }
+}
