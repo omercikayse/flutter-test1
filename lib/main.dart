@@ -26,34 +26,50 @@ class MyAppHome extends StatefulWidget {
 }
 
 class _MyAppHomeState extends State<MyAppHome> {
+  String dumyText =
+      '                                 The lorem ipsum is a placeholder text used in publishing and graphic design. This filler text is a short paragraph that contains all the letters of the alphabet. The characters are spread out evenly so that the reader'
+          .toLowerCase()
+          .replaceAll(',', '')
+          .replaceAll('.', '');
   int step = 0;
   int score = 0;
-  int count = 0;
+  late int lastTypedAt;
+
+  void updateLastTypeAt() {
+    lastTypedAt = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  void onType(String value) {
+    print(value);
+    updateLastTypeAt();
+    String trimmedValue = dumyText.trimLeft();
+    if (trimmedValue.indexOf(value) != 0) {
+      setState(() {
+        step = 2;
+      });
+    } else {
+      setState(() {
+        score = value.length;
+      });
+    }
+  }
 
   void onStartClick() {
     setState(() {
+      updateLastTypeAt();
       step++;
     });
 
     Timer.periodic((Duration(seconds: 1)), (timer) {
-      //GAME OVER
-      if (count > 5) step++;
-
+      int now = DateTime.now().millisecondsSinceEpoch;
       setState(() {
-        count++;
-        if (step == 1) score++;
+        if (now - lastTypedAt > 5000) step++;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    String dumyText =
-        'The lorem ipsum is a placeholder text used in publishing and graphic design. This filler text is a short paragraph that contains all the letters of the alphabet. The characters are spread out evenly so that the reader'
-            .toLowerCase()
-            .replaceAll(',', '')
-            .replaceAll('.', '');
-
     List<Widget> shownWidget = [];
 
     if (step == 0) {
@@ -88,6 +104,7 @@ class _MyAppHomeState extends State<MyAppHome> {
           padding: const EdgeInsets.only(left: 32, right: 16, top: 16),
           child: TextField(
             autofocus: true,
+            onChanged: onType,
             decoration: InputDecoration(
                 border: OutlineInputBorder(), labelText: 'Type please'),
           ),
