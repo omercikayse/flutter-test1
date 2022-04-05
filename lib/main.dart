@@ -31,6 +31,7 @@ class _MyAppHomeState extends State<MyAppHome> {
           .toLowerCase()
           .replaceAll(',', '')
           .replaceAll('.', '');
+  String userName = '';
   int step = 0;
   int score = 0;
   late int lastTypedAt;
@@ -40,18 +41,21 @@ class _MyAppHomeState extends State<MyAppHome> {
   }
 
   void onType(String value) {
-    print(value);
     updateLastTypeAt();
     String trimmedValue = dumyText.trimLeft();
-    if (trimmedValue.indexOf(value) != 0) {
-      setState(() {
+    setState(() {
+      if (trimmedValue.indexOf(value) != 0) {
         step = 2;
-      });
-    } else {
-      setState(() {
+      } else {
         score = value.length;
-      });
-    }
+      }
+    });
+  }
+
+  void onUserNameType(String value) {
+    setState(() {
+      userName = value;
+    });
   }
 
   void onStartClick() {
@@ -79,9 +83,20 @@ class _MyAppHomeState extends State<MyAppHome> {
     if (step == 0) {
       shownWidget = <Widget>[
         Text('Welcome !'),
-        ElevatedButton(
-          child: Text('Start'),
-          onPressed: onStartClick,
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: TextField(
+            onChanged: onUserNameType,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(), labelText: 'What is your name?'),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(10),
+          child: ElevatedButton(
+            child: Text('Start'),
+            onPressed: userName.length == 0 ? null : onStartClick,
+          ),
         )
       ];
     } else if (step == 1) {
