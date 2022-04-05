@@ -132,7 +132,11 @@ class _MyAppHomeState extends State<MyAppHome> {
     } else {
       shownWidget = <Widget>[
         Text('Finish, your score : $score'),
-        ElevatedButton(onPressed: resetGame, child: Text("Try Again!"))
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child:
+              ElevatedButton(onPressed: resetGame, child: Text("Try Again!")),
+        )
       ];
     }
 
