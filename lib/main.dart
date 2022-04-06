@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:marquee/marquee.dart';
 import 'dart:async';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -66,6 +67,7 @@ class _MyAppHomeState extends State<MyAppHome> {
 
     var timer = Timer.periodic((Duration(seconds: 1)), (timer) {
       int now = DateTime.now().millisecondsSinceEpoch;
+
       setState(() {
         if (step == 1 && now - lastTypedAt > 5000) {
           timer.cancel();
@@ -73,6 +75,18 @@ class _MyAppHomeState extends State<MyAppHome> {
         }
         if (step != 1) timer.cancel();
       });
+
+      if (step != 1) {
+        Map<String, String> headers = {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
+        };
+        var body = {'userName': userName, 'score': score.toString()};
+        var url = Uri.parse(
+            'https://my-flutter-server-api.herokuapp.com/users/score');
+
+        http.post(url, body: body);
+      }
     });
   }
 
