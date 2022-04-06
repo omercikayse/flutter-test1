@@ -54,7 +54,7 @@ class _MyAppHomeState extends State<MyAppHome> {
 
   void onUserNameType(String value) {
     setState(() {
-      userName = value;
+      userName = value.trim();
     });
   }
 
@@ -155,7 +155,7 @@ class _MyAppHomeState extends State<MyAppHome> {
   void resetGame() {
     setState(() {
       score = 0;
-      step = 0;
+      step = 1;
     });
   }
 }
